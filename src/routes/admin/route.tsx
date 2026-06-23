@@ -1,12 +1,21 @@
 import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
 
-import { apiRequest } from "@/lib/api";
-
 export const Route = createFileRoute("/admin")({
   beforeLoad: async ({ location }) => {
     if (location.pathname === "/admin/login") return;
-    const { authenticated } = await apiRequest<{ authenticated: boolean }>("/api/auth/session");
-    if (!authenticated) {
+    
+    try {
+      const response = await fetch(
+        new URL("/api/auth/session", typeof window !== "undefined" ? window.location.origin : "http://localhost"),
+        {
+          credentials: "include",
+        }
+      );
+      const { authenticated } = await response.json();
+      if (!authenticated) {
+        throw redirect({ to: "/admin/login" });
+      }
+    } catch {
       throw redirect({ to: "/admin/login" });
     }
   },

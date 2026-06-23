@@ -131,13 +131,14 @@ export async function loadSiteContent(): Promise<SiteContent> {
 
 export async function clearExpiredSessions() {
   const db = await getDb();
-  await db.delete(schema.adminSessions).where(lt(schema.adminSessions.expiresAt, new Date().toISOString()));
+  await db.delete(schema.adminSessions).where(lt(schema.adminSessions.expiresAt, new Date()));
 }
 
-export async function createAdminSession(token: string, expiresAt: string) {
+export async function createAdminSession(token: string, expiresAt: string | Date) {
   const db = await getDb();
   await clearExpiredSessions();
-  await db.insert(schema.adminSessions).values({ token, expiresAt });
+  const expiryDate = typeof expiresAt === "string" ? new Date(expiresAt) : expiresAt;
+  await db.insert(schema.adminSessions).values({ token, expiresAt: expiryDate });
 }
 
 export async function deleteAdminSession(token: string) {

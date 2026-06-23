@@ -18,9 +18,9 @@ let dbInstance: ReturnType<typeof drizzle<typeof schema>> | null = null;
 let pgClient: postgres.Sql | null = null;
 
 async function runMigrations(sql: postgres.Sql) {
-  // Create tables using raw SQL
-  await sql`
-    CREATE TABLE IF NOT EXISTS tour_packages (
+  // Create tables using raw SQL - each statement separately
+  const statements = [
+    `CREATE TABLE IF NOT EXISTS tour_packages (
       id SERIAL PRIMARY KEY,
       title TEXT NOT NULL,
       details TEXT NOT NULL,
@@ -28,56 +28,56 @@ async function runMigrations(sql: postgres.Sql) {
       original_prices TEXT,
       sort_order INTEGER NOT NULL DEFAULT 0,
       active BOOLEAN NOT NULL DEFAULT true
-    );
+    )`,
 
-    CREATE TABLE IF NOT EXISTS destinations (
+    `CREATE TABLE IF NOT EXISTS destinations (
       id SERIAL PRIMARY KEY,
       name TEXT NOT NULL,
       description TEXT NOT NULL DEFAULT 'Premium treks, lodges, permits and local expertise.',
       sort_order INTEGER NOT NULL DEFAULT 0,
       active BOOLEAN NOT NULL DEFAULT true
-    );
+    )`,
 
-    CREATE TABLE IF NOT EXISTS bike_rentals (
+    `CREATE TABLE IF NOT EXISTS bike_rentals (
       id SERIAL PRIMARY KEY,
       title TEXT NOT NULL,
       price TEXT NOT NULL,
       features TEXT NOT NULL,
       sort_order INTEGER NOT NULL DEFAULT 0,
       active BOOLEAN NOT NULL DEFAULT true
-    );
+    )`,
 
-    CREATE TABLE IF NOT EXISTS trekking_regions (
+    `CREATE TABLE IF NOT EXISTS trekking_regions (
       id SERIAL PRIMARY KEY,
       name TEXT NOT NULL,
       sort_order INTEGER NOT NULL DEFAULT 0
-    );
+    )`,
 
-    CREATE TABLE IF NOT EXISTS trekking_items (
+    `CREATE TABLE IF NOT EXISTS trekking_items (
       id SERIAL PRIMARY KEY,
       region_id INTEGER NOT NULL REFERENCES trekking_regions(id) ON DELETE CASCADE,
       name TEXT NOT NULL,
       sort_order INTEGER NOT NULL DEFAULT 0
-    );
+    )`,
 
-    CREATE TABLE IF NOT EXISTS features (
+    `CREATE TABLE IF NOT EXISTS features (
       id SERIAL PRIMARY KEY,
       icon TEXT NOT NULL,
       title TEXT NOT NULL,
       description TEXT NOT NULL,
       sort_order INTEGER NOT NULL DEFAULT 0,
       active BOOLEAN NOT NULL DEFAULT true
-    );
+    )`,
 
-    CREATE TABLE IF NOT EXISTS testimonials (
+    `CREATE TABLE IF NOT EXISTS testimonials (
       id SERIAL PRIMARY KEY,
       quote TEXT NOT NULL,
       author TEXT NOT NULL DEFAULT 'Guest',
       sort_order INTEGER NOT NULL DEFAULT 0,
       active BOOLEAN NOT NULL DEFAULT true
-    );
+    )`,
 
-    CREATE TABLE IF NOT EXISTS blog_posts (
+    `CREATE TABLE IF NOT EXISTS blog_posts (
       id SERIAL PRIMARY KEY,
       title TEXT NOT NULL,
       summary TEXT NOT NULL,
@@ -86,14 +86,14 @@ async function runMigrations(sql: postgres.Sql) {
       sort_order INTEGER NOT NULL DEFAULT 0,
       active BOOLEAN NOT NULL DEFAULT true,
       created_at TIMESTAMP DEFAULT NOW()
-    );
+    )`,
 
-    CREATE TABLE IF NOT EXISTS site_settings (
+    `CREATE TABLE IF NOT EXISTS site_settings (
       key TEXT PRIMARY KEY,
       value TEXT NOT NULL
-    );
+    )`,
 
-    CREATE TABLE IF NOT EXISTS contact_inquiries (
+    `CREATE TABLE IF NOT EXISTS contact_inquiries (
       id SERIAL PRIMARY KEY,
       name TEXT NOT NULL,
       email TEXT NOT NULL,
@@ -101,13 +101,21 @@ async function runMigrations(sql: postgres.Sql) {
       message TEXT NOT NULL,
       created_at TIMESTAMP NOT NULL DEFAULT NOW(),
       read BOOLEAN NOT NULL DEFAULT false
-    );
+    )`,
 
-    CREATE TABLE IF NOT EXISTS admin_sessions (
+    `CREATE TABLE IF NOT EXISTS admin_sessions (
       token TEXT PRIMARY KEY,
       expires_at TIMESTAMP NOT NULL
-    );
-  `;
+    )`,
+  ];
+
+  for (const statement of statements) {
+    try {
+      await sql.unsafe(statement);
+    } catch (error) {
+      console.error(`Error executing migration: ${error}`);
+    }
+  }
 }
 
 async function seedDatabase(db: ReturnType<typeof drizzle<typeof schema>>) {
@@ -207,11 +215,7 @@ export async function getDb() {
   });
 
   // Run migrations
-  try {
-    await runMigrations(pgClient);
-  } catch (error) {
-    console.log("Migration check completed (tables may already exist)");
-  }
+  await runMigrations(pgClient);
 
   // Create drizzle instance
   dbInstance = drizzle(pgClient, { schema });
