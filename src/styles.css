@@ -1,0 +1,260 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: var(--font-body);
+  --font-serif: var(--font-display);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+  --color-gold: var(--gold);
+  --color-charcoal: var(--charcoal);
+  --color-charcoal-light: var(--charcoal-light);
+  --color-charcoal-foreground: var(--charcoal-foreground);
+  --color-charcoal-muted: var(--charcoal-muted);
+  --color-hero-foreground: var(--hero-foreground);
+  --color-hero-muted: var(--hero-muted);
+  --color-nav-foreground: var(--nav-foreground);
+  --shadow-soft: var(--shadow-soft);
+  --shadow-luxury: var(--shadow-luxury);
+  --shadow-gold: var(--shadow-gold);
+}
+
+:root {
+  --font-body: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-display: Georgia, "Times New Roman", serif;
+  --radius: 1rem;
+  --background: oklch(0.985 0.01 92);
+  --foreground: oklch(0.17 0.018 238);
+  --card: oklch(1 0 0 / 92%);
+  --card-foreground: oklch(0.18 0.023 238);
+  --popover: oklch(1 0 0 / 96%);
+  --popover-foreground: oklch(0.17 0.018 238);
+  --primary: oklch(0.41 0.102 235);
+  --primary-foreground: oklch(0.985 0.01 92);
+  --secondary: oklch(0.945 0.026 226);
+  --secondary-foreground: oklch(0.2 0.032 238);
+  --muted: oklch(0.94 0.012 230);
+  --muted-foreground: oklch(0.47 0.026 238);
+  --accent: oklch(0.66 0.126 78);
+  --accent-foreground: oklch(0.18 0.023 238);
+  --destructive: oklch(0.58 0.21 29);
+  --destructive-foreground: oklch(0.98 0.01 92);
+  --border: oklch(0.85 0.02 230 / 72%);
+  --input: oklch(0.89 0.018 230);
+  --ring: oklch(0.62 0.12 235);
+  --gold: oklch(0.77 0.135 82);
+  --charcoal: oklch(0.18 0.024 238);
+  --charcoal-light: oklch(0.25 0.028 238);
+  --charcoal-foreground: oklch(0.97 0.012 92);
+  --charcoal-muted: oklch(0.78 0.026 225);
+  --hero-foreground: oklch(0.985 0.008 92);
+  --hero-muted: oklch(0.89 0.018 92);
+  --nav-foreground: oklch(0.985 0.008 92);
+  --shadow-soft: 0 20px 60px -28px color-mix(in oklab, var(--primary) 30%, transparent);
+  --shadow-luxury: 0 28px 90px -35px color-mix(in oklab, var(--charcoal) 38%, transparent);
+  --shadow-gold: 0 18px 45px -22px color-mix(in oklab, var(--accent) 70%, transparent);
+}
+
+.dark {
+  --background: oklch(0.16 0.022 238);
+  --foreground: oklch(0.96 0.01 92);
+  --card: oklch(0.22 0.026 238 / 92%);
+  --card-foreground: oklch(0.96 0.01 92);
+  --popover: oklch(0.2 0.026 238 / 96%);
+  --popover-foreground: oklch(0.96 0.01 92);
+  --primary: oklch(0.68 0.12 235);
+  --primary-foreground: oklch(0.14 0.02 238);
+  --secondary: oklch(0.24 0.03 238);
+  --secondary-foreground: oklch(0.96 0.01 92);
+  --muted: oklch(0.24 0.03 238);
+  --muted-foreground: oklch(0.75 0.028 225);
+  --accent: oklch(0.74 0.13 82);
+  --accent-foreground: oklch(0.15 0.02 238);
+  --destructive: oklch(0.7 0.19 29);
+  --destructive-foreground: oklch(0.98 0.01 92);
+  --border: oklch(1 0 0 / 13%);
+  --input: oklch(1 0 0 / 16%);
+  --ring: oklch(0.68 0.12 235);
+  --gold: oklch(0.78 0.135 82);
+  --charcoal: oklch(0.13 0.018 238);
+  --charcoal-light: oklch(0.23 0.026 238);
+  --charcoal-foreground: oklch(0.97 0.012 92);
+  --charcoal-muted: oklch(0.78 0.026 225);
+  --hero-foreground: oklch(0.985 0.008 92);
+  --hero-muted: oklch(0.89 0.018 92);
+  --nav-foreground: oklch(0.985 0.008 92);
+}
+
+@layer base {
+  * { border-color: var(--color-border); }
+  html { scroll-behavior: smooth; }
+  body {
+    background: radial-gradient(circle at 20% 0%, color-mix(in oklab, var(--secondary) 58%, transparent), transparent 34%), var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-body);
+    letter-spacing: 0;
+  }
+  a { transition: color 180ms ease, transform 180ms ease, opacity 180ms ease; }
+  button, a, input, select, textarea { outline-color: var(--color-ring); }
+}
+
+@layer components {
+  .site-header {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding: 1rem clamp(1rem, 4vw, 3rem);
+    color: var(--color-nav-foreground);
+    transition: background-color 220ms ease, box-shadow 220ms ease, padding 220ms ease, backdrop-filter 220ms ease;
+  }
+  .site-header-solid {
+    padding-block: 0.55rem;
+    background: color-mix(in oklab, var(--background) 90%, transparent);
+    color: var(--foreground);
+    --nav-foreground: var(--foreground);
+    box-shadow: var(--shadow-soft);
+    backdrop-filter: blur(22px);
+  }
+  .site-header nav a:hover { color: var(--color-gold); }
+  .mega-panel {
+    position: fixed;
+    top: 5.5rem;
+    left: 50%;
+    right: auto;
+    pointer-events: none;
+    opacity: 0;
+    transform-origin: top;
+    border: 1px solid var(--color-border);
+    border-radius: 1.5rem;
+    background: color-mix(in oklab, var(--popover) 90%, transparent);
+    padding: 1.5rem;
+    color: var(--popover-foreground);
+    box-shadow: var(--shadow-luxury);
+    backdrop-filter: blur(24px);
+    transition: opacity 180ms ease, transform 180ms ease;
+    transform: translate(-50%, 10px) scale(0.98);
+    width: min(900px, calc(100vw - 2rem));
+    max-width: calc(100vw - 2rem);
+    z-index: 60;
+  }
+  .group:hover > .mega-panel { pointer-events: auto; opacity: 1; transform: translate(-50%, 0) scale(1); }
+  .group:hover > .mega-panel.left-1\/2 { transform: translate(-50%, 0) scale(1); }
+  .mega-panel.right-0 { right: auto; }
+  .btn-primary, .btn-secondary, .btn-icon {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    border-radius: 999px;
+    font-weight: 800;
+    transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+  }
+  .btn-primary { background: var(--color-primary); color: var(--color-primary-foreground); padding: 0.9rem 1.35rem; box-shadow: var(--shadow-gold); }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: var(--shadow-luxury); }
+  .btn-secondary { border: 1px solid color-mix(in oklab, var(--hero-foreground) 38%, transparent); color: var(--color-hero-foreground); padding: 0.9rem 1.35rem; backdrop-filter: blur(14px); }
+  .btn-secondary:hover { transform: translateY(-2px); background: color-mix(in oklab, var(--hero-foreground) 12%, transparent); }
+  .btn-icon { justify-content: center; width: 2.75rem; height: 2.75rem; background: var(--color-primary); color: var(--color-primary-foreground); }
+  .hero-section { position: relative; min-height: 100vh; overflow: hidden; background: var(--color-charcoal); }
+  .hero-overlay { position: absolute; inset: 0; background: linear-gradient(90deg, color-mix(in oklab, var(--charcoal) 82%, transparent), color-mix(in oklab, var(--charcoal) 34%, transparent), color-mix(in oklab, var(--accent) 14%, transparent)), linear-gradient(0deg, color-mix(in oklab, var(--charcoal) 62%, transparent), transparent 38%); }
+  .search-panel {
+    position: absolute;
+    left: 50%;
+    bottom: 1.6rem;
+    z-index: 20;
+    display: grid;
+    width: min(1080px, calc(100% - 2rem));
+    transform: translateX(-50%);
+    overflow: hidden;
+    border: 1px solid color-mix(in oklab, var(--border) 75%, transparent);
+    border-radius: 1.75rem;
+    background: color-mix(in oklab, var(--card) 88%, transparent);
+    box-shadow: var(--shadow-luxury);
+    backdrop-filter: blur(24px);
+  }
+  .section-padding { padding-block: clamp(4.5rem, 9vw, 8rem); scroll-margin-top: 6rem; }
+  .image-frame, .destination-card, .package-card, .blog-card {
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: 2rem;
+    background: var(--color-card);
+    box-shadow: var(--shadow-soft);
+  }
+  .signature-tilt { transition: transform 350ms ease, box-shadow 350ms ease; }
+  .signature-tilt:hover { transform: perspective(1000px) rotateX(2deg) rotateY(-3deg) translateY(-4px); box-shadow: var(--shadow-luxury); }
+  .stat-card { border: 1px solid var(--color-border); border-radius: 1.5rem; background: var(--color-card); padding: 1.25rem; box-shadow: var(--shadow-soft); }
+  .stat-card strong { display: block; font-family: var(--font-display); font-size: clamp(2rem, 4vw, 3rem); color: var(--color-primary); }
+  .stat-card span { color: var(--color-muted-foreground); font-weight: 700; }
+  .destination-card { position: relative; min-height: 18rem; }
+  .package-card, .blog-card { transition: transform 220ms ease, box-shadow 220ms ease; }
+  .package-card:hover, .blog-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-luxury); }
+  .bike-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    border: 1px solid color-mix(in oklab, var(--charcoal-foreground) 14%, transparent);
+    border-radius: 1.5rem;
+    background: color-mix(in oklab, var(--charcoal-light) 78%, transparent);
+    padding: 1.25rem;
+    box-shadow: var(--shadow-luxury);
+  }
+  .feature-card { border: 1px solid var(--color-border); border-radius: 1.5rem; background: var(--color-card); padding: 1.5rem; box-shadow: var(--shadow-soft); transition: transform 180ms ease, box-shadow 180ms ease; }
+  .feature-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-luxury); }
+  .feature-card span { color: var(--color-gold); font-size: 2rem; }
+  .feature-card h3 { margin-top: 1rem; font-size: 1.25rem; font-weight: 800; }
+  .feature-card p { margin-top: 0.75rem; color: var(--color-muted-foreground); line-height: 1.7; }
+  .testimonial-track { display: grid; gap: 1.25rem; }
+  .testimonial-card { border: 1px solid var(--color-border); border-radius: 1.5rem; background: var(--color-card); padding: 1.5rem; box-shadow: var(--shadow-soft); }
+  .testimonial-card blockquote { font-family: var(--font-display); font-size: clamp(1.4rem, 3vw, 2.35rem); line-height: 1.25; }
+  .testimonial-card figcaption { margin-top: 1rem; color: var(--color-accent); font-weight: 800; }
+  .contact-form { border: 1px solid var(--color-border); border-radius: 2rem; background: var(--color-card); padding: clamp(1.2rem, 4vw, 2rem); box-shadow: var(--shadow-luxury); }
+  .contact-form label { display: block; margin-bottom: 1rem; }
+  .contact-form span { display: block; margin-bottom: 0.45rem; font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.16em; color: var(--color-muted-foreground); }
+  .contact-form input, .contact-form textarea { width: 100%; border: 1px solid var(--color-input); border-radius: 1rem; background: color-mix(in oklab, var(--background) 75%, transparent); padding: 0.95rem 1rem; color: var(--color-foreground); }
+}
+
+@media (min-width: 768px) {
+  .search-panel { grid-template-columns: 1fr 1fr 1fr auto; }
+  .testimonial-track { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+@media (max-width: 767px) {
+  .search-panel { position: relative; bottom: auto; margin: -7rem auto 2rem; transform: none; left: auto; }
+  .hero-section { padding-bottom: 1rem; }
+  .bike-card { align-items: flex-start; flex-direction: column; }
+  .bike-card > div:last-child { text-align: left; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}
