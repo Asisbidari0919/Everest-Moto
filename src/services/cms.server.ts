@@ -331,8 +331,47 @@ export async function submitContactInquiry(data: {
     email: data.email,
     phone: data.phone ?? null,
     message: data.message,
-    createdAt: new Date().toISOString(),
+    createdAt: new Date(),
     read: false,
   });
+  return { success: true };
+}
+
+export async function listBlogPosts() {
+  const db = await getDb();
+  return db.select().from(schema.blogPosts).orderBy(asc(schema.blogPosts.sortOrder));
+}
+
+export async function saveBlogPost(data: {
+  id?: number;
+  title: string;
+  summary: string;
+  content?: string;
+  imageUrl?: string;
+  sortOrder?: number;
+  active?: boolean;
+}) {
+  const db = await getDb();
+  const payload = {
+    title: data.title,
+    summary: data.summary,
+    content: data.content ?? null,
+    imageUrl: data.imageUrl ?? null,
+    sortOrder: data.sortOrder ?? 0,
+    active: data.active ?? true,
+  };
+
+  if (data.id) {
+    await db.update(schema.blogPosts).set(payload).where(eq(schema.blogPosts.id, data.id));
+    return { success: true, id: data.id };
+  }
+
+  const [created] = await db.insert(schema.blogPosts).values(payload).returning();
+  return { success: true, id: created.id };
+}
+
+export async function deleteBlogPost(id: number) {
+  const db = await getDb();
+  await db.delete(schema.blogPosts).where(eq(schema.blogPosts.id, id));
   return { success: true };
 }

@@ -1,5 +1,5 @@
 import { Link, useRouter } from "@tanstack/react-router";
-import { LayoutDashboard, MapPin, MessageSquare, Package, Settings, Bike, LogOut } from "lucide-react";
+import { LayoutDashboard, MapPin, MessageSquare, Package, Settings, Bike, LogOut, BookOpen } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { apiRequest } from "@/lib/api";
@@ -9,6 +9,7 @@ const navItems = [
   { to: "/admin/packages", label: "Tour Packages", icon: Package },
   { to: "/admin/destinations", label: "Destinations", icon: MapPin },
   { to: "/admin/bikes", label: "Bike Rentals", icon: Bike },
+  { to: "/admin/blogs", label: "Blog Posts", icon: BookOpen },
   { to: "/admin/inquiries", label: "Inquiries", icon: MessageSquare },
   { to: "/admin/settings", label: "Settings", icon: Settings },
 ];

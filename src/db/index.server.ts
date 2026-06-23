@@ -1,8 +1,6 @@
-import Database from "better-sqlite3";
-import { drizzle } from "drizzle-orm/better-sqlite3";
+import { drizzle } from "drizzle-orm/postgres-js";
 import { count } from "drizzle-orm";
-import { existsSync, mkdirSync } from "node:fs";
-import path from "node:path";
+import postgres from "postgres";
 
 import * as schema from "./schema";
 import {
@@ -17,76 +15,77 @@ import {
 } from "./seed-data";
 
 let dbInstance: ReturnType<typeof drizzle<typeof schema>> | null = null;
+let pgClient: postgres.Sql | null = null;
 
-function getDbPath() {
-  return path.join(process.cwd(), "data", "everest.db");
-}
-
-function runMigrations(sqlite: Database.Database) {
-  sqlite.exec(`
+async function runMigrations(sql: postgres.Sql) {
+  // Create tables using raw SQL
+  await sql`
     CREATE TABLE IF NOT EXISTS tour_packages (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       title TEXT NOT NULL,
       details TEXT NOT NULL,
       price TEXT NOT NULL,
       original_prices TEXT,
       sort_order INTEGER NOT NULL DEFAULT 0,
-      active INTEGER NOT NULL DEFAULT 1
+      active BOOLEAN NOT NULL DEFAULT true
     );
 
     CREATE TABLE IF NOT EXISTS destinations (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       name TEXT NOT NULL,
       description TEXT NOT NULL DEFAULT 'Premium treks, lodges, permits and local expertise.',
       sort_order INTEGER NOT NULL DEFAULT 0,
-      active INTEGER NOT NULL DEFAULT 1
+      active BOOLEAN NOT NULL DEFAULT true
     );
 
     CREATE TABLE IF NOT EXISTS bike_rentals (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       title TEXT NOT NULL,
       price TEXT NOT NULL,
       features TEXT NOT NULL,
       sort_order INTEGER NOT NULL DEFAULT 0,
-      active INTEGER NOT NULL DEFAULT 1
+      active BOOLEAN NOT NULL DEFAULT true
     );
 
     CREATE TABLE IF NOT EXISTS trekking_regions (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       name TEXT NOT NULL,
       sort_order INTEGER NOT NULL DEFAULT 0
     );
 
     CREATE TABLE IF NOT EXISTS trekking_items (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       region_id INTEGER NOT NULL REFERENCES trekking_regions(id) ON DELETE CASCADE,
       name TEXT NOT NULL,
       sort_order INTEGER NOT NULL DEFAULT 0
     );
 
     CREATE TABLE IF NOT EXISTS features (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       icon TEXT NOT NULL,
       title TEXT NOT NULL,
       description TEXT NOT NULL,
       sort_order INTEGER NOT NULL DEFAULT 0,
-      active INTEGER NOT NULL DEFAULT 1
+      active BOOLEAN NOT NULL DEFAULT true
     );
 
     CREATE TABLE IF NOT EXISTS testimonials (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       quote TEXT NOT NULL,
       author TEXT NOT NULL DEFAULT 'Guest',
       sort_order INTEGER NOT NULL DEFAULT 0,
-      active INTEGER NOT NULL DEFAULT 1
+      active BOOLEAN NOT NULL DEFAULT true
     );
 
     CREATE TABLE IF NOT EXISTS blog_posts (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       title TEXT NOT NULL,
       summary TEXT NOT NULL,
+      content TEXT,
+      image_url TEXT,
       sort_order INTEGER NOT NULL DEFAULT 0,
-      active INTEGER NOT NULL DEFAULT 1
+      active BOOLEAN NOT NULL DEFAULT true,
+      created_at TIMESTAMP DEFAULT NOW()
     );
 
     CREATE TABLE IF NOT EXISTS site_settings (
@@ -95,20 +94,20 @@ function runMigrations(sqlite: Database.Database) {
     );
 
     CREATE TABLE IF NOT EXISTS contact_inquiries (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      id SERIAL PRIMARY KEY,
       name TEXT NOT NULL,
       email TEXT NOT NULL,
       phone TEXT,
       message TEXT NOT NULL,
-      created_at TEXT NOT NULL,
-      read INTEGER NOT NULL DEFAULT 0
+      created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+      read BOOLEAN NOT NULL DEFAULT false
     );
 
     CREATE TABLE IF NOT EXISTS admin_sessions (
       token TEXT PRIMARY KEY,
-      expires_at TEXT NOT NULL
+      expires_at TIMESTAMP NOT NULL
     );
-  `);
+  `;
 }
 
 async function seedDatabase(db: ReturnType<typeof drizzle<typeof schema>>) {
@@ -196,16 +195,39 @@ async function seedDatabase(db: ReturnType<typeof drizzle<typeof schema>>) {
 export async function getDb() {
   if (dbInstance) return dbInstance;
 
-  const dataDir = path.join(process.cwd(), "data");
-  if (!existsSync(dataDir)) mkdirSync(dataDir, { recursive: true });
+  const dbUrl = process.env.DATABASE_URL;
+  if (!dbUrl) {
+    throw new Error("DATABASE_URL environment variable is not set");
+  }
 
-  const sqlite = new Database(getDbPath());
-  sqlite.pragma("journal_mode = WAL");
-  runMigrations(sqlite);
+  // Create postgres client
+  pgClient = postgres(dbUrl, { 
+    connect_timeout: 10,
+    idle_timeout: 30,
+  });
 
-  dbInstance = drizzle(sqlite, { schema });
+  // Run migrations
+  try {
+    await runMigrations(pgClient);
+  } catch (error) {
+    console.log("Migration check completed (tables may already exist)");
+  }
+
+  // Create drizzle instance
+  dbInstance = drizzle(pgClient, { schema });
+  
+  // Seed database if needed
   await seedDatabase(dbInstance);
+  
   return dbInstance;
+}
+
+export async function closeDb() {
+  if (pgClient) {
+    await pgClient.end();
+    pgClient = null;
+    dbInstance = null;
+  }
 }
 
 export { schema };

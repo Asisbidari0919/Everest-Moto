@@ -71,7 +71,10 @@ function MegaMenu({
   }
 
   return (
-    <div className="mega-panel left-1/2 w-[min(1180px,calc(100vw-2rem))] -translate-x-1/2">
+    <div
+      className="mega-panel w-[min(1180px,calc(100vw-2rem))]"
+      style={{ position: "absolute", top: "100%", left: "50%", transform: "translateX(-50%)" }}
+    >
       <div className="grid gap-6 lg:grid-cols-4">
         {trekkingMenu.map((group) => (
           <div key={group.region}>

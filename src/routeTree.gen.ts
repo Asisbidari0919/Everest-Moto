@@ -19,15 +19,18 @@ import { Route as AdminPackagesRouteImport } from './routes/admin/packages'
 import { Route as AdminLoginRouteImport } from './routes/admin/login'
 import { Route as AdminInquiriesRouteImport } from './routes/admin/inquiries'
 import { Route as AdminDestinationsRouteImport } from './routes/admin/destinations'
+import { Route as AdminBlogsRouteImport } from './routes/admin/blogs'
 import { Route as AdminBikesRouteImport } from './routes/admin/bikes'
 import { Route as ApiAuthSessionRouteImport } from './routes/api/auth/session'
 import { Route as ApiAuthLogoutRouteImport } from './routes/api/auth/logout'
 import { Route as ApiAuthLoginRouteImport } from './routes/api/auth/login'
+import { Route as ApiAdminUploadRouteImport } from './routes/api/admin/upload'
 import { Route as ApiAdminStatsRouteImport } from './routes/api/admin/stats'
 import { Route as ApiAdminSettingsRouteImport } from './routes/api/admin/settings'
 import { Route as ApiAdminPackagesRouteImport } from './routes/api/admin/packages'
 import { Route as ApiAdminInquiriesRouteImport } from './routes/api/admin/inquiries'
 import { Route as ApiAdminDestinationsRouteImport } from './routes/api/admin/destinations'
+import { Route as ApiAdminBlogsRouteImport } from './routes/api/admin/blogs'
 import { Route as ApiAdminBikesRouteImport } from './routes/api/admin/bikes'
 
 const AdminRouteRoute = AdminRouteRouteImport.update({
@@ -80,6 +83,11 @@ const AdminDestinationsRoute = AdminDestinationsRouteImport.update({
   path: '/destinations',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminBlogsRoute = AdminBlogsRouteImport.update({
+  id: '/blogs',
+  path: '/blogs',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const AdminBikesRoute = AdminBikesRouteImport.update({
   id: '/bikes',
   path: '/bikes',
@@ -98,6 +106,11 @@ const ApiAuthLogoutRoute = ApiAuthLogoutRouteImport.update({
 const ApiAuthLoginRoute = ApiAuthLoginRouteImport.update({
   id: '/api/auth/login',
   path: '/api/auth/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminUploadRoute = ApiAdminUploadRouteImport.update({
+  id: '/api/admin/upload',
+  path: '/api/admin/upload',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiAdminStatsRoute = ApiAdminStatsRouteImport.update({
@@ -125,6 +138,11 @@ const ApiAdminDestinationsRoute = ApiAdminDestinationsRouteImport.update({
   path: '/api/admin/destinations',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAdminBlogsRoute = ApiAdminBlogsRouteImport.update({
+  id: '/api/admin/blogs',
+  path: '/api/admin/blogs',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAdminBikesRoute = ApiAdminBikesRouteImport.update({
   id: '/api/admin/bikes',
   path: '/api/admin/bikes',
@@ -135,6 +153,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
   '/admin/bikes': typeof AdminBikesRoute
+  '/admin/blogs': typeof AdminBlogsRoute
   '/admin/destinations': typeof AdminDestinationsRoute
   '/admin/inquiries': typeof AdminInquiriesRoute
   '/admin/login': typeof AdminLoginRoute
@@ -144,11 +163,13 @@ export interface FileRoutesByFullPath {
   '/api/content': typeof ApiContentRoute
   '/admin/': typeof AdminIndexRoute
   '/api/admin/bikes': typeof ApiAdminBikesRoute
+  '/api/admin/blogs': typeof ApiAdminBlogsRoute
   '/api/admin/destinations': typeof ApiAdminDestinationsRoute
   '/api/admin/inquiries': typeof ApiAdminInquiriesRoute
   '/api/admin/packages': typeof ApiAdminPackagesRoute
   '/api/admin/settings': typeof ApiAdminSettingsRoute
   '/api/admin/stats': typeof ApiAdminStatsRoute
+  '/api/admin/upload': typeof ApiAdminUploadRoute
   '/api/auth/login': typeof ApiAuthLoginRoute
   '/api/auth/logout': typeof ApiAuthLogoutRoute
   '/api/auth/session': typeof ApiAuthSessionRoute
@@ -156,6 +177,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin/bikes': typeof AdminBikesRoute
+  '/admin/blogs': typeof AdminBlogsRoute
   '/admin/destinations': typeof AdminDestinationsRoute
   '/admin/inquiries': typeof AdminInquiriesRoute
   '/admin/login': typeof AdminLoginRoute
@@ -165,11 +187,13 @@ export interface FileRoutesByTo {
   '/api/content': typeof ApiContentRoute
   '/admin': typeof AdminIndexRoute
   '/api/admin/bikes': typeof ApiAdminBikesRoute
+  '/api/admin/blogs': typeof ApiAdminBlogsRoute
   '/api/admin/destinations': typeof ApiAdminDestinationsRoute
   '/api/admin/inquiries': typeof ApiAdminInquiriesRoute
   '/api/admin/packages': typeof ApiAdminPackagesRoute
   '/api/admin/settings': typeof ApiAdminSettingsRoute
   '/api/admin/stats': typeof ApiAdminStatsRoute
+  '/api/admin/upload': typeof ApiAdminUploadRoute
   '/api/auth/login': typeof ApiAuthLoginRoute
   '/api/auth/logout': typeof ApiAuthLogoutRoute
   '/api/auth/session': typeof ApiAuthSessionRoute
@@ -179,6 +203,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteRouteWithChildren
   '/admin/bikes': typeof AdminBikesRoute
+  '/admin/blogs': typeof AdminBlogsRoute
   '/admin/destinations': typeof AdminDestinationsRoute
   '/admin/inquiries': typeof AdminInquiriesRoute
   '/admin/login': typeof AdminLoginRoute
@@ -188,11 +213,13 @@ export interface FileRoutesById {
   '/api/content': typeof ApiContentRoute
   '/admin/': typeof AdminIndexRoute
   '/api/admin/bikes': typeof ApiAdminBikesRoute
+  '/api/admin/blogs': typeof ApiAdminBlogsRoute
   '/api/admin/destinations': typeof ApiAdminDestinationsRoute
   '/api/admin/inquiries': typeof ApiAdminInquiriesRoute
   '/api/admin/packages': typeof ApiAdminPackagesRoute
   '/api/admin/settings': typeof ApiAdminSettingsRoute
   '/api/admin/stats': typeof ApiAdminStatsRoute
+  '/api/admin/upload': typeof ApiAdminUploadRoute
   '/api/auth/login': typeof ApiAuthLoginRoute
   '/api/auth/logout': typeof ApiAuthLogoutRoute
   '/api/auth/session': typeof ApiAuthSessionRoute
@@ -203,6 +230,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/admin/bikes'
+    | '/admin/blogs'
     | '/admin/destinations'
     | '/admin/inquiries'
     | '/admin/login'
@@ -212,11 +240,13 @@ export interface FileRouteTypes {
     | '/api/content'
     | '/admin/'
     | '/api/admin/bikes'
+    | '/api/admin/blogs'
     | '/api/admin/destinations'
     | '/api/admin/inquiries'
     | '/api/admin/packages'
     | '/api/admin/settings'
     | '/api/admin/stats'
+    | '/api/admin/upload'
     | '/api/auth/login'
     | '/api/auth/logout'
     | '/api/auth/session'
@@ -224,6 +254,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/admin/bikes'
+    | '/admin/blogs'
     | '/admin/destinations'
     | '/admin/inquiries'
     | '/admin/login'
@@ -233,11 +264,13 @@ export interface FileRouteTypes {
     | '/api/content'
     | '/admin'
     | '/api/admin/bikes'
+    | '/api/admin/blogs'
     | '/api/admin/destinations'
     | '/api/admin/inquiries'
     | '/api/admin/packages'
     | '/api/admin/settings'
     | '/api/admin/stats'
+    | '/api/admin/upload'
     | '/api/auth/login'
     | '/api/auth/logout'
     | '/api/auth/session'
@@ -246,6 +279,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/admin/bikes'
+    | '/admin/blogs'
     | '/admin/destinations'
     | '/admin/inquiries'
     | '/admin/login'
@@ -255,11 +289,13 @@ export interface FileRouteTypes {
     | '/api/content'
     | '/admin/'
     | '/api/admin/bikes'
+    | '/api/admin/blogs'
     | '/api/admin/destinations'
     | '/api/admin/inquiries'
     | '/api/admin/packages'
     | '/api/admin/settings'
     | '/api/admin/stats'
+    | '/api/admin/upload'
     | '/api/auth/login'
     | '/api/auth/logout'
     | '/api/auth/session'
@@ -271,11 +307,13 @@ export interface RootRouteChildren {
   ApiContactRoute: typeof ApiContactRoute
   ApiContentRoute: typeof ApiContentRoute
   ApiAdminBikesRoute: typeof ApiAdminBikesRoute
+  ApiAdminBlogsRoute: typeof ApiAdminBlogsRoute
   ApiAdminDestinationsRoute: typeof ApiAdminDestinationsRoute
   ApiAdminInquiriesRoute: typeof ApiAdminInquiriesRoute
   ApiAdminPackagesRoute: typeof ApiAdminPackagesRoute
   ApiAdminSettingsRoute: typeof ApiAdminSettingsRoute
   ApiAdminStatsRoute: typeof ApiAdminStatsRoute
+  ApiAdminUploadRoute: typeof ApiAdminUploadRoute
   ApiAuthLoginRoute: typeof ApiAuthLoginRoute
   ApiAuthLogoutRoute: typeof ApiAuthLogoutRoute
   ApiAuthSessionRoute: typeof ApiAuthSessionRoute
@@ -353,6 +391,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminDestinationsRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/blogs': {
+      id: '/admin/blogs'
+      path: '/blogs'
+      fullPath: '/admin/blogs'
+      preLoaderRoute: typeof AdminBlogsRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/admin/bikes': {
       id: '/admin/bikes'
       path: '/bikes'
@@ -379,6 +424,13 @@ declare module '@tanstack/react-router' {
       path: '/api/auth/login'
       fullPath: '/api/auth/login'
       preLoaderRoute: typeof ApiAuthLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/upload': {
+      id: '/api/admin/upload'
+      path: '/api/admin/upload'
+      fullPath: '/api/admin/upload'
+      preLoaderRoute: typeof ApiAdminUploadRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/admin/stats': {
@@ -416,6 +468,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAdminDestinationsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/admin/blogs': {
+      id: '/api/admin/blogs'
+      path: '/api/admin/blogs'
+      fullPath: '/api/admin/blogs'
+      preLoaderRoute: typeof ApiAdminBlogsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/admin/bikes': {
       id: '/api/admin/bikes'
       path: '/api/admin/bikes'
@@ -428,6 +487,7 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteRouteChildren {
   AdminBikesRoute: typeof AdminBikesRoute
+  AdminBlogsRoute: typeof AdminBlogsRoute
   AdminDestinationsRoute: typeof AdminDestinationsRoute
   AdminInquiriesRoute: typeof AdminInquiriesRoute
   AdminLoginRoute: typeof AdminLoginRoute
@@ -438,6 +498,7 @@ interface AdminRouteRouteChildren {
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminBikesRoute: AdminBikesRoute,
+  AdminBlogsRoute: AdminBlogsRoute,
   AdminDestinationsRoute: AdminDestinationsRoute,
   AdminInquiriesRoute: AdminInquiriesRoute,
   AdminLoginRoute: AdminLoginRoute,
@@ -456,11 +517,13 @@ const rootRouteChildren: RootRouteChildren = {
   ApiContactRoute: ApiContactRoute,
   ApiContentRoute: ApiContentRoute,
   ApiAdminBikesRoute: ApiAdminBikesRoute,
+  ApiAdminBlogsRoute: ApiAdminBlogsRoute,
   ApiAdminDestinationsRoute: ApiAdminDestinationsRoute,
   ApiAdminInquiriesRoute: ApiAdminInquiriesRoute,
   ApiAdminPackagesRoute: ApiAdminPackagesRoute,
   ApiAdminSettingsRoute: ApiAdminSettingsRoute,
   ApiAdminStatsRoute: ApiAdminStatsRoute,
+  ApiAdminUploadRoute: ApiAdminUploadRoute,
   ApiAuthLoginRoute: ApiAuthLoginRoute,
   ApiAuthLogoutRoute: ApiAuthLogoutRoute,
   ApiAuthSessionRoute: ApiAuthSessionRoute,

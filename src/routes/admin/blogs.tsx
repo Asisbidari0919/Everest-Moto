@@ -9,30 +9,31 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { apiRequest } from "@/lib/api";
 
-type PackageRow = {
+type BlogPostRow = {
   id: number;
   title: string;
-  details: string;
-  price: string;
-  originalPrices: string[];
+  summary: string;
+  content?: string;
+  imageUrl?: string;
   sortOrder: number;
   active: boolean;
+  createdAt: string;
 };
 
-export const Route = createFileRoute("/admin/packages")({
-  loader: () => apiRequest<PackageRow[]>("/api/admin/packages"),
-  component: AdminPackagesPage,
+export const Route = createFileRoute("/admin/blogs")({
+  loader: () => apiRequest<BlogPostRow[]>("/api/admin/blogs"),
+  component: AdminBlogsPage,
 });
 
-function AdminPackagesPage() {
+function AdminBlogsPage() {
   const initialRows = Route.useLoaderData();
   const [rows, setRows] = useState(initialRows);
-  const [editing, setEditing] = useState<PackageRow | null>(null);
+  const [editing, setEditing] = useState<BlogPostRow | null>(null);
   const [form, setForm] = useState({
     title: "",
-    details: "",
-    price: "",
-    originalPrices: "",
+    summary: "",
+    content: "",
+    imageUrl: "",
     sortOrder: "0",
     active: true,
   });
@@ -40,23 +41,23 @@ function AdminPackagesPage() {
 
   function openCreate() {
     setEditing(null);
-    setForm({ title: "", details: "", price: "", originalPrices: "", sortOrder: String(rows.length), active: true });
+    setForm({ title: "", summary: "", content: "", imageUrl: "", sortOrder: String(rows.length), active: true });
   }
 
-  function openEdit(row: PackageRow) {
+  function openEdit(row: BlogPostRow) {
     setEditing(row);
     setForm({
       title: row.title,
-      details: row.details,
-      price: row.price,
-      originalPrices: row.originalPrices.join(", "),
+      summary: row.summary,
+      content: row.content || "",
+      imageUrl: row.imageUrl || "",
       sortOrder: String(row.sortOrder),
       active: row.active,
     });
   }
 
   async function refresh() {
-    setRows(await apiRequest<PackageRow[]>("/api/admin/packages"));
+    setRows(await apiRequest<BlogPostRow[]>("/api/admin/blogs"));
   }
 
   async function handleSave(event: React.FormEvent) {
@@ -64,17 +65,14 @@ function AdminPackagesPage() {
     setSaving(true);
 
     try {
-      await apiRequest("/api/admin/packages", {
+      await apiRequest("/api/admin/blogs", {
         method: "POST",
         body: JSON.stringify({
           id: editing?.id,
           title: form.title,
-          details: form.details,
-          price: form.price,
-          originalPrices: form.originalPrices
-            .split(",")
-            .map((value) => value.trim())
-            .filter(Boolean),
+          summary: form.summary,
+          content: form.content || null,
+          imageUrl: form.imageUrl || null,
           sortOrder: Number(form.sortOrder),
           active: form.active,
         }),
@@ -87,9 +85,9 @@ function AdminPackagesPage() {
     }
   }
 
-  async function handleDelete(row: PackageRow) {
-    if (!confirm(`Delete package "${row.title}"?`)) return;
-    await apiRequest("/api/admin/packages", {
+  async function handleDelete(row: BlogPostRow) {
+    if (!confirm(`Delete blog post "${row.title}"?`)) return;
+    await apiRequest("/api/admin/blogs", {
       method: "DELETE",
       body: JSON.stringify({ id: row.id }),
     });
@@ -97,18 +95,17 @@ function AdminPackagesPage() {
   }
 
   return (
-    <AdminLayout title="Tour Packages">
+    <AdminLayout title="Blog Posts">
       <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
         <CrudTable
           rows={rows}
           columns={[
-            { key: "title", label: "Tour" },
-            { key: "details", label: "Details" },
-            { key: "price", label: "Price" },
+            { key: "title", label: "Title" },
+            { key: "summary", label: "Summary" },
             {
               key: "active",
               label: "Status",
-              render: (row) => (row.active ? "Active" : "Hidden"),
+              render: (row) => (row.active ? "Published" : "Draft"),
             },
           ]}
           onAdd={openCreate}
@@ -117,28 +114,30 @@ function AdminPackagesPage() {
         />
 
         <form onSubmit={handleSave} className="rounded-2xl border border-border bg-card p-6 shadow-soft">
-          <h2 className="font-serif text-2xl font-semibold">{editing ? "Edit package" : "Add package"}</h2>
+          <h2 className="font-serif text-2xl font-semibold">{editing ? "Edit blog post" : "Add blog post"}</h2>
           <div className="mt-6 space-y-4">
             <label className="block space-y-2">
-              <span className="text-sm font-medium">Tour name</span>
+              <span className="text-sm font-medium">Title</span>
               <Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required />
             </label>
             <label className="block space-y-2">
-              <span className="text-sm font-medium">Duration / details</span>
-              <Textarea value={form.details} onChange={(e) => setForm({ ...form, details: e.target.value })} required />
+              <span className="text-sm font-medium">Summary</span>
+              <Textarea value={form.summary} onChange={(e) => setForm({ ...form, summary: e.target.value })} required />
             </label>
             <label className="block space-y-2">
-              <span className="text-sm font-medium">Price</span>
-              <Input value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} required />
-            </label>
-            <label className="block space-y-2">
-              <span className="text-sm font-medium">Original prices (comma separated)</span>
-              <Input
-                value={form.originalPrices}
-                onChange={(e) => setForm({ ...form, originalPrices: e.target.value })}
-                placeholder="$1,600, $1,599"
+              <span className="text-sm font-medium">Content</span>
+              <Textarea
+                value={form.content}
+                onChange={(e) => setForm({ ...form, content: e.target.value })}
+                rows={6}
+                placeholder="Full blog post content"
               />
             </label>
+            <ImageUpload
+              value={form.imageUrl}
+              onChange={(url) => setForm({ ...form, imageUrl: url })}
+              label="Featured Image"
+            />
             <label className="block space-y-2">
               <span className="text-sm font-medium">Sort order</span>
               <Input value={form.sortOrder} onChange={(e) => setForm({ ...form, sortOrder: e.target.value })} />
@@ -149,11 +148,11 @@ function AdminPackagesPage() {
                 checked={form.active}
                 onChange={(e) => setForm({ ...form, active: e.target.checked })}
               />
-              Active on website
+              Publish on website
             </label>
           </div>
           <Button type="submit" className="mt-6 w-full" disabled={saving}>
-            {saving ? "Saving..." : editing ? "Update package" : "Create package"}
+            {saving ? "Saving..." : editing ? "Update post" : "Create post"}
           </Button>
         </form>
       </div>

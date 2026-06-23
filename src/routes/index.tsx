@@ -5,7 +5,16 @@ import { apiRequest } from "@/lib/api";
 import type { SiteContent } from "@/types/content";
 
 export const Route = createFileRoute("/")({
-  loader: () => apiRequest<SiteContent>("/api/content"),
+  loader: async () => {
+    // When running on the server, call the server loader directly instead of
+    // fetching a relative URL (which fails in some server runtimes).
+    if (typeof window === "undefined") {
+      const { loadSiteContent } = await import("@/services/cms.server");
+      return loadSiteContent();
+    }
+
+    return apiRequest<SiteContent>("/api/content");
+  },
   head: () => ({
     meta: [
       { title: "Everest Moto Tours & Travels | Nepal Tours" },
